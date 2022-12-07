@@ -1,0 +1,35 @@
+syntax = "proto3";
+package pano_detection;
+
+service DeformYolov5 {
+  rpc Detect (YoloModelRequest) returns (YoloModelResponse) {}
+}
+
+/***************************** ↓ 网络模型 ↓ *****************************/
+message YoloModelRequest {// Yolo 网络输入模型
+  // required
+  string image_path = 1;
+
+  // optional
+  int64 image_size = 2; // image 被缩放后的大小
+  string weights_path = 4; // 网络权重
+  double conf_thres = 5; // 置信度阈值，默认 0.25
+  double iou_thres = 6; // iou 阈值，默认 0.45
+}
+
+message DetectResultBBX {// 检测结果框
+  // required
+  int64 xmin = 1;
+  int64 ymin = 2;
+  int64 xmax = 3;
+  int64 ymax = 4;
+  int64 label = 5;
+  double conf = 6; // 置信度
+}
+
+message YoloModelResponse {// Yolo 网络输出模型
+  // required
+  string image_path = 1;
+  repeated DetectResultBBX detect_result_bbx_list = 2;
+}
+/***************************** ↑ 网络模型 ↑ *****************************/
